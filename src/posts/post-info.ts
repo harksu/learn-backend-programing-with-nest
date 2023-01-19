@@ -1,5 +1,5 @@
-export class PostInfo {
-  id: number;
+export interface PostInfo {
+  id: string;
   title: string;
   content: string;
 }
