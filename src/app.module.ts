@@ -5,6 +5,9 @@ import { validationSchema } from './config/validationSchema';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModuleModule } from './auth-module/auth-module.module';
+import { AuthServiceService } from './auth-service/auth-service.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -26,8 +29,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
     }),
+    AuthModuleModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [AuthServiceService],
 })
 export class AppModule {}
