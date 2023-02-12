@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from './post.entity';
 import { Repository } from 'typeorm';
 
+import { UserEntity } from 'src/users/user.entity';
 @Injectable()
 export class PostsService {
   post: PostInfo[];
@@ -13,6 +14,8 @@ export class PostsService {
     private userService: UsersService,
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
+    @InjectRepository(UserEntity) // 유저 모듈 내에서 사용할 저장소 등록
+    private userRepository: Repository<UserEntity>,
   ) {
     this.post = [];
   }
@@ -37,10 +40,13 @@ export class PostsService {
     const userInfo = await this.userService.getUserInfo(dto.id);
     const post = new PostEntity();
     // post.id = String(new Date().toLocaleString());
-    post.id = dto.id;
     post.title = dto.title;
     post.content = dto.content;
     post.name = userInfo.name;
+
+    post.user = await this.userRepository.findOne({
+      where: { id: dto.id },
+    });
     await this.postRepository.save(post);
     // post.name = userInfo.name;
     return;
