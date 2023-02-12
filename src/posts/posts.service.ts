@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PostInfo } from './post-info';
 import { createPostDto } from './dtos/create-post.dto';
+import { UsersService } from 'src/users/users.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PostEntity } from './post.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PostsService {
   post: PostInfo[];
-  constructor() {
+  constructor(
+    private userService: UsersService,
+    @InjectRepository(PostEntity)
+    private postRepository: Repository<PostEntity>,
+  ) {
     this.post = [];
   }
   //서비스에서는 생성자를 만들면 안됨 -> 외우도록하자.
@@ -25,9 +33,16 @@ export class PostsService {
     return findedPost;
   }
 
-  createPost(dto: createPostDto): void {
-    const newPost = { ...dto, id: String(new Date().toLocaleString()) };
-    this.post.push(newPost);
+  async createPost(dto: createPostDto): Promise<void> {
+    const userInfo = await this.userService.getUserInfo(dto.id);
+    const post = new PostEntity();
+    // post.id = String(new Date().toLocaleString());
+    post.id = dto.id;
+    post.title = dto.title;
+    post.content = dto.content;
+    post.name = userInfo.name;
+    await this.postRepository.save(post);
+    // post.name = userInfo.name;
     return;
   }
 
