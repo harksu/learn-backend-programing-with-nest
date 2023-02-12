@@ -25,7 +25,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { email: emailAddress },
     });
-    return user !== undefined;
+    return user !== null; //여기서 null이랑 undefined일 로직이 차이가남 => undefined일 땐 안굴러감
   }
 
   private async saveUser(

@@ -6,9 +6,9 @@ import { Request } from 'express';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService) {}
-  private validateRequest(request: any) {
-    const jwtString = request.headers.authorization.split('Beearer '[1]);
-
+  private validateRequest(request: Request) {
+    const jwtString = request.headers.authorization.split('Bearer ')[1];
+    console.log(jwtString);
     this.authService.verify(jwtString);
     return true;
   }

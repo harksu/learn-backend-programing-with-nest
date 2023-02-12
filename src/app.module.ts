@@ -5,9 +5,8 @@ import { validationSchema } from './config/validationSchema';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModuleModule } from './auth-module/auth-module.module';
-import { AuthServiceService } from './auth-service/auth-service.service';
 import { AuthModule } from './auth/auth.module';
+import authConfig from './config/authConfig';
 
 @Module({
   imports: [
@@ -15,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     ConfigModule.forRoot({
       envFilePath: [`${__dirname}/config/env/.development.env`],
-      load: [emailConfig],
+      load: [emailConfig, authConfig],
       isGlobal: true,
       validationSchema,
     }),
@@ -29,10 +28,10 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
     }),
-    AuthModuleModule,
+
     AuthModule,
   ],
   controllers: [],
-  providers: [AuthServiceService],
+  providers: [],
 })
 export class AppModule {}
